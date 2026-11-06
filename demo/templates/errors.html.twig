@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{# Intentional errors, one per kind #}
+{% block body %}
+    {# Variable that is never passed #}
+    <p>{{ missing }}</p>
+
+    {# Property on a scalar #}
+    <p>{{ name.length }}</p>
+
+    {# Nullable value used without a check #}
+    <p>{{ latest.title }}</p>
+
+    {# Method called with too many arguments #}
+    {% for post in posts %}
+        <p>{{ post.excerpt(10, 'extra') }}</p>
+    {% endfor %}
+
+    {# Item of a list used as an object #}
+    <p>{{ tags[0].foo }}</p>
+
+    {# Loop over a non-iterable #}
+    {% for char in count %}
+        <p>{{ char }}</p>
+    {% endfor %}
+{% endblock %}

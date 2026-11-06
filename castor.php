@@ -39,6 +39,30 @@ function phpunit(
     return exit_code(['vendor/bin/phpunit', ...$rawTokens]);
 }
 
+#[AsTask(name: 'demo', ignoreValidationErrors: true)]
+function demo(
+    #[AsRawTokens]
+    array $rawTokens = [],
+): int {
+    if ( ! fs()->exists('vendor')) {
+        composer_install();
+    }
+
+    return exit_code(['php', 'bin/twigstan', '--configuration=demo/twigstan.php', ...$rawTokens]);
+}
+
+#[AsTask(name: 'demo-serve')]
+function demo_serve(
+    #[AsOption]
+    string $host = '0.0.0.0:8080',
+): int {
+    if ( ! fs()->exists('vendor')) {
+        composer_install();
+    }
+
+    return exit_code(['php', '-S', $host, '-t', 'demo/public']);
+}
+
 #[AsTask(name: 'phpstan', aliases: ['stan'])]
 function phpstan(
     #[AsOption]

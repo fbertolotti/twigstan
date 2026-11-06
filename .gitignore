@@ -8,5 +8,6 @@
 /twigstan-baseline.php
 /twig-loader.php
 /.phpstan
+/.phpstan-demo
 /.castor.stub.php
 /.twig-cs-fixer.cache

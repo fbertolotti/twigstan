@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for post in posts %}
+        {% include '_post_card.html.twig' with {post: post} only %}
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{# Intentional errors, so TwigStan has something to report #}
+{% block body %}
+    <time>{{ post.publishedAt|date('Y-m-d') }}</time>
+    <p>{{ post.body }}</p>
+    <p>By {{ post.author }}</p>
+    <p>{{ post.summary() }}</p>
+{% endblock %}

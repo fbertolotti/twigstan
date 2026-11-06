@@ -1,0 +1,26 @@
+services:
+    php: &php
+        build:
+            context: .
+            args:
+                PHP_VERSION: ${PHP_VERSION:-8.3}
+        # Run as the host user, so files written to vendor/ and caches are not owned by root
+        user: "${UID:-1000}:${GID:-1000}"
+        volumes:
+            - .:/app
+            - composer-cache:/tmp/composer
+        environment:
+            COMPOSER_HOME: /tmp/composer
+            # The user has no home directory in the container, and Castor writes its cache there
+            HOME: /tmp/home
+        # Development container that stays up: docker compose up -d && docker compose exec php bash
+        command: sleep infinity
+
+    tests:
+        <<: *php
+        profiles: [tests]
+        # One-off run: docker compose run --rm tests
+        command: sh -c "composer install --no-interaction --prefer-dist && vendor/bin/phpunit"
+
+volumes:
+    composer-cache:

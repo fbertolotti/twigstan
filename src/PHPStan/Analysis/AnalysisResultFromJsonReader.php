@@ -34,24 +34,61 @@ final readonly class AnalysisResultFromJsonReader
 
         $result = json_decode($content, true);
 
-        $errors = array_values(array_map(
-            Error::decode(...),
-            $result['fileSpecificErrors'],
-        ));
+        if ( ! is_array($result)) {
+            throw new InvalidArgumentException(sprintf('File "%s" does not contain a JSON object.', $file));
+        }
+
+        $errors = [];
+        foreach (self::arrayOf($result, 'fileSpecificErrors', $file) as $error) {
+            if ( ! is_array($error)) {
+                throw new InvalidArgumentException(sprintf('File "%s" contains an invalid error.', $file));
+            }
+
+            $errors[] = Error::decode($error);
+        }
 
         $collectedData = [];
-        foreach ($result['collectedData'] as $json) {
+        foreach (self::arrayOf($result, 'collectedData', $file) as $json) {
+            if ( ! is_array($json)) {
+                throw new InvalidArgumentException(sprintf('File "%s" contains invalid collected data.', $file));
+            }
+
             // PHPStan groups the data that a collector collected in a file.
-            foreach ($json['data'] as $data) {
+            foreach (self::arrayOf($json, 'data', $file) as $data) {
                 $collectedData[] = CollectedData::decode([...$json, 'data' => $data]);
             }
+        }
+
+        $notFileSpecificErrors = [];
+        foreach (self::arrayOf($result, 'notFileSpecificErrors', $file) as $error) {
+            if ( ! is_string($error)) {
+                throw new InvalidArgumentException(sprintf('File "%s" contains an invalid error.', $file));
+            }
+
+            $notFileSpecificErrors[] = $error;
         }
 
         return new PHPStanAnalysisResult(
             $exitCode,
             $errors,
             $collectedData,
-            $result['notFileSpecificErrors'],
+            $notFileSpecificErrors,
         );
+    }
+
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
+    private static function arrayOf(array $data, string $key, string $file): array
+    {
+        $value = $data[$key] ?? null;
+
+        if ( ! is_array($value)) {
+            throw new InvalidArgumentException(sprintf('File "%s" does not contain the "%s" list.', $file, $key));
+        }
+
+        return $value;
     }
 }

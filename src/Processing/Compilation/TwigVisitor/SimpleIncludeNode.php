@@ -31,8 +31,8 @@ final class SimpleIncludeNode extends IncludeNode
         return new self(
             $expr,
             $variables,
-            $node->getAttribute('only'),
-            $node->getAttribute('ignore_missing'),
+            (bool) $node->getAttribute('only'),
+            (bool) $node->getAttribute('ignore_missing'),
             $node->getTemplateLine(),
         );
     }

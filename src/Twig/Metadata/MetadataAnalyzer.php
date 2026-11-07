@@ -78,6 +78,11 @@ final readonly class MetadataAnalyzer
             }
 
             $blockName = $block->getNode('0')->getAttribute('name');
+
+            if ( ! is_string($blockName)) {
+                throw new RuntimeException('Expected the name of the block to be a string.');
+            }
+
             $blocks[] = $blockName;
 
             $parentExpression = $this->nodeFinder->findFirstInstanceOf($block, ParentExpression::class);
@@ -154,13 +159,22 @@ final readonly class MetadataAnalyzer
     private function getStringsFromExpression(Node $node): array
     {
         if ($node instanceof ConstantExpression) {
-            return [$node->getAttribute('value')];
+            $value = $node->getAttribute('value');
+
+            // Other constants, such as null, are not template names.
+            return is_scalar($value) ? [(string) $value] : [];
         }
 
         if ($node instanceof ArrayExpression) {
             $strings = [];
             foreach ($node->getKeyValuePairs() as $pair) {
-                $strings = [...$strings, ...$this->getStringsFromExpression($pair['value'])];
+                $value = is_array($pair) ? ($pair['value'] ?? null) : null;
+
+                if ( ! $value instanceof Node) {
+                    continue;
+                }
+
+                $strings = [...$strings, ...$this->getStringsFromExpression($value)];
             }
 
             return $strings;
@@ -174,17 +188,24 @@ final readonly class MetadataAnalyzer
         }
 
         if ($node instanceof ConcatBinary) {
-            if ($node->getNode('left') instanceof ConstantExpression) {
+            $left = $node->getNode('left');
+            $right = $node->getNode('right');
+
+            $prefix = $left instanceof ConstantExpression ? ($this->getStringsFromExpression($left)[0] ?? null) : null;
+
+            if ($prefix !== null) {
                 return array_map(
-                    fn(string $template) => $node->getNode('left')->getAttribute('value') . $template,
-                    $this->getStringsFromExpression($node->getNode('right')),
+                    fn(string $template) => $prefix . $template,
+                    $this->getStringsFromExpression($right),
                 );
             }
 
-            if ($node->getNode('right') instanceof ConstantExpression) {
+            $suffix = $right instanceof ConstantExpression ? ($this->getStringsFromExpression($right)[0] ?? null) : null;
+
+            if ($suffix !== null) {
                 return array_map(
-                    fn(string $template) => $template . $node->getNode('right')->getAttribute('value'),
-                    $this->getStringsFromExpression($node->getNode('left')),
+                    fn(string $template) => $template . $suffix,
+                    $this->getStringsFromExpression($left),
                 );
             }
         }

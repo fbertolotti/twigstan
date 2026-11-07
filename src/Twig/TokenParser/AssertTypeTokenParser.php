@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TwigStan\Twig\TokenParser;
 
 use PHPStan\DependencyInjection\AutowiredService;
+use Twig\Error\SyntaxError;
 use Twig\Node\EmptyNode;
 use Twig\Token;
 use Twig\TokenParser\AbstractTokenParser;
@@ -25,7 +26,11 @@ final class AssertTypeTokenParser extends AbstractTokenParser
 
         $name = $this->parser->parseExpression();
 
-        $expectedType = $stream->expect(Token::STRING_TYPE);
+        $expectedType = $stream->expect(Token::STRING_TYPE)->getValue();
+
+        if ( ! is_string($expectedType)) {
+            throw new SyntaxError('The expected type must be a string.', $token->getLine(), $stream->getSourceContext());
+        }
 
         $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
 
@@ -33,7 +38,7 @@ final class AssertTypeTokenParser extends AbstractTokenParser
             return new EmptyNode($token->getLine());
         }
 
-        return new AssertTypeNode($name, $expectedType->getValue(), $token->getLine());
+        return new AssertTypeNode($name, $expectedType, $token->getLine());
     }
 
     public function getTag(): string

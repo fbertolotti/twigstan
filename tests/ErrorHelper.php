@@ -31,31 +31,13 @@ final readonly class ErrorHelper
         ];
 
         if (file_exists(Path::join($directory, 'errors.json'))) {
-            $expectedErrors = json_decode(
-                $filesystem->readFile(Path::join($directory, 'errors.json')),
-                true,
-                512,
-                JSON_THROW_ON_ERROR,
-            );
-
-            Assert::assertIsArray($expectedErrors);
-            Assert::assertArrayHasKey('errors', $expectedErrors);
-            Assert::assertArrayHasKey('fileSpecificErrors', $expectedErrors);
+            $expectedErrors = self::readExpectedErrors($filesystem, Path::join($directory, 'errors.json'));
         }
 
         $versionSpecificErrorsFile = Path::join($directory, sprintf('errors.v%d.json', Environment::MAJOR_VERSION));
 
         if (file_exists($versionSpecificErrorsFile)) {
-            $versionSpecificErrors = json_decode(
-                $filesystem->readFile($versionSpecificErrorsFile),
-                true,
-                512,
-                JSON_THROW_ON_ERROR,
-            );
-
-            Assert::assertIsArray($versionSpecificErrors);
-            Assert::assertArrayHasKey('errors', $versionSpecificErrors);
-            Assert::assertArrayHasKey('fileSpecificErrors', $versionSpecificErrors);
+            $versionSpecificErrors = self::readExpectedErrors($filesystem, $versionSpecificErrorsFile);
 
             $expectedErrors['errors'] = [
                 ...$expectedErrors['errors'],
@@ -73,9 +55,12 @@ final readonly class ErrorHelper
         if ($files !== []) {
             $expectedErrors['errors'] = array_filter(
                 $expectedErrors['errors'],
-                function ($error) use ($files) {
+                function (array $error) use ($files) {
+                    $twigSourceLocation = $error['twigSourceLocation'] ?? null;
+                    $twigSourceLocation = is_string($twigSourceLocation) ? $twigSourceLocation : '';
+
                     foreach ($files as $file) {
-                        if (str_starts_with(sprintf('%s:', $error['twigSourceLocation']), $file)) {
+                        if (str_starts_with(sprintf('%s:', $twigSourceLocation), $file)) {
                             return true;
                         }
                     }
@@ -148,6 +133,37 @@ final readonly class ErrorHelper
         } catch (IOException) {
             // Ignore
         }
+    }
+
+    /**
+     * @throws JsonException
+     * @return array{errors: list<array<mixed>>, fileSpecificErrors: list<mixed>}
+     */
+    private static function readExpectedErrors(Filesystem $filesystem, string $file): array
+    {
+        $expectedErrors = json_decode($filesystem->readFile($file), true, 512, JSON_THROW_ON_ERROR);
+
+        Assert::assertIsArray($expectedErrors);
+        Assert::assertArrayHasKey('errors', $expectedErrors);
+        Assert::assertArrayHasKey('fileSpecificErrors', $expectedErrors);
+
+        $errors = $expectedErrors['errors'];
+        $fileSpecificErrors = $expectedErrors['fileSpecificErrors'];
+
+        Assert::assertIsArray($errors);
+        Assert::assertIsArray($fileSpecificErrors);
+
+        $errorList = [];
+        foreach ($errors as $error) {
+            Assert::assertIsArray($error);
+
+            $errorList[] = $error;
+        }
+
+        return [
+            'errors' => $errorList,
+            'fileSpecificErrors' => array_values($fileSpecificErrors),
+        ];
     }
 
     /**

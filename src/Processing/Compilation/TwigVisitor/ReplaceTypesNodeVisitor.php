@@ -22,7 +22,7 @@ final readonly class ReplaceTypesNodeVisitor implements NodeVisitorInterface
             return $node;
         }
 
-        return new CompilingTypesNode($node->getAttribute('mapping'), $node->getTemplateLine());
+        return new CompilingTypesNode(CompilingTypesNode::getMapping($node), $node->getTemplateLine());
     }
 
     public function getPriority(): int

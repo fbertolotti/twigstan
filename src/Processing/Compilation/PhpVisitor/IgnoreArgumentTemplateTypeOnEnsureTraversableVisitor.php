@@ -48,7 +48,7 @@ final class IgnoreArgumentTemplateTypeOnEnsureTraversableVisitor extends NodeVis
     {
         $parent = $node->getAttribute('parent');
 
-        if ($parent === null) {
+        if ( ! $parent instanceof Node) {
             return null;
         }
 

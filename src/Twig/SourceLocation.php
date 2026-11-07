@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TwigStan\Twig;
 
+use InvalidArgumentException;
 use IteratorAggregate;
 use Stringable;
 use Symfony\Component\Filesystem\Path;
@@ -56,10 +57,18 @@ final readonly class SourceLocation implements Stringable, IteratorAggregate
      */
     public static function decode(array $data): self
     {
+        $fileName = $data['fileName'] ?? null;
+        $lineNumber = $data['lineNumber'] ?? null;
+        $previous = $data['previous'] ?? null;
+
+        if ( ! is_string($fileName) || ! is_int($lineNumber) || ($previous !== null && ! is_array($previous))) {
+            throw new InvalidArgumentException('The source location data is invalid.');
+        }
+
         return new self(
-            $data['fileName'],
-            $data['lineNumber'],
-            isset($data['previous']) ? self::decode($data['previous']) : null,
+            $fileName,
+            $lineNumber,
+            $previous !== null ? self::decode($previous) : null,
         );
     }
 

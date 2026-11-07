@@ -13,7 +13,7 @@ use LogicException;
 final class Context implements ArrayAccess
 {
     /**
-     * @var array<string, mixed>
+     * @var array<string, null|string>
      */
     private array $data = [];
 
@@ -22,7 +22,7 @@ final class Context implements ArrayAccess
         return isset($this->data[$offset]);
     }
 
-    public function offsetGet(mixed $offset): mixed
+    public function offsetGet(mixed $offset): ?string
     {
         return $this->data[$offset];
     }

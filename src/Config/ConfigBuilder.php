@@ -192,7 +192,7 @@ final class ConfigBuilder
 
         $baselineErrors = include $baselineFile;
 
-        if ( ! array_is_list($baselineErrors)) {
+        if ( ! is_array($baselineErrors) || ! array_is_list($baselineErrors)) {
             throw new InvalidArgumentException(sprintf('The baseline file "%s" must return an array.', $baselineFile));
         }
 

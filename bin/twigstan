@@ -42,12 +42,18 @@ $application->addCommands([new LazyCommand(
             throw new RuntimeException('Could not determine the current working directory.');
         }
 
-        $configurationFile = Path::makeAbsolute((string) $input->getOption('configuration'), $currentWorkingDirectory);
+        $configuration = $input->getOption('configuration');
+
+        if ( ! is_string($configuration)) {
+            throw new RuntimeException('The configuration option must be a string.');
+        }
+
+        $configurationFile = Path::makeAbsolute($configuration, $currentWorkingDirectory);
 
         if ( ! file_exists($configurationFile)) {
             $io = new SymfonyStyle($input, $output);
 
-            if ($input->getOption('configuration') !== $defaultConfigurationFile) {
+            if ($configuration !== $defaultConfigurationFile) {
                 $io->error(sprintf('Configuration file "%s" does not exist.', $configurationFile));
 
                 exit(1);

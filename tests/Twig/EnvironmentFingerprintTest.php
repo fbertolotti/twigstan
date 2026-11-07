@@ -19,7 +19,9 @@ final class EnvironmentFingerprintTest extends TestCase
         $filesystem->dumpFile($file, '<?php return fn(string $code): string => $code;');
 
         $twig = new Environment(new ArrayLoader());
-        $twig->addFunction(new TwigFunction('code', require $file));
+        $closure = require $file;
+        self::assertIsCallable($closure);
+        $twig->addFunction(new TwigFunction('code', $closure));
 
         $before = (new EnvironmentFingerprint($twig, null))->get();
         $filesystem->dumpFile($file, '<?php return fn(?string $code): string => (string) $code;');

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TwigStan\PHPStan\Analysis;
 
+use InvalidArgumentException;
 use TwigStan\Twig\SourceLocation;
 
 final readonly class Error
@@ -24,15 +25,33 @@ final readonly class Error
      */
     public static function decode(array $json): self
     {
+        $message = $json['message'] ?? null;
+        $file = $json['file'] ?? null;
+        $line = $json['line'] ?? 0;
+        $identifier = $json['identifier'] ?? null;
+        $tip = $json['tip'] ?? null;
+        $canBeIgnored = $json['canBeIgnored'] ?? true;
+
+        if (
+            ! is_string($message)
+            || ($file !== null && ! is_string($file))
+            || ! is_int($line)
+            || ($identifier !== null && ! is_string($identifier))
+            || ($tip !== null && ! is_string($tip))
+            || ! is_bool($canBeIgnored)
+        ) {
+            throw new InvalidArgumentException('The PHPStan error data is invalid.');
+        }
+
         return new self(
-            $json['message'],
-            $json['file'],
-            $json['line'] ?? 0,
+            $message,
+            $file,
+            $line,
             null,
             null,
-            $json['identifier'],
-            $json['tip'],
-            $json['canBeIgnored'],
+            $identifier,
+            $tip,
+            $canBeIgnored,
         );
     }
 

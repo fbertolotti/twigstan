@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TwigStan\Application;
 
+use InvalidArgumentException;
 use LogicException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -97,7 +98,11 @@ final class AnalyzeCommand extends Command
         if ($generateBaselineFile === null) {
             $generateBaselineFile = $this->baselineFile ?? Path::join($this->currentWorkingDirectory, 'twigstan-baseline.php');
         } elseif ($generateBaselineFile !== false) {
-            if (Path::getExtension($input->getOption('generate-baseline')) !== 'php') {
+            if ( ! is_string($generateBaselineFile)) {
+                throw new InvalidArgumentException('The generate-baseline option must be a file path.');
+            }
+
+            if (Path::getExtension($generateBaselineFile) !== 'php') {
                 $errorOutput->writeln('<error>Baseline file must have .php extension</error>');
 
                 return self::FAILURE;
@@ -108,8 +113,23 @@ final class AnalyzeCommand extends Command
             $generateBaselineFile = null;
         }
 
+        $paths = [];
+        $pathsArgument = $input->getArgument('paths');
+
+        if ( ! is_array($pathsArgument)) {
+            throw new InvalidArgumentException('The paths argument must be a list of paths.');
+        }
+
+        foreach ($pathsArgument as $path) {
+            if ( ! is_string($path)) {
+                throw new InvalidArgumentException('The paths argument must be a list of paths.');
+            }
+
+            $paths[] = $path;
+        }
+
         $result = $this->analyze(
-            $input->getArgument('paths'),
+            $paths,
             $output,
             $errorOutput,
             $input->getOption('debug') === true,

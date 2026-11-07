@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TwigStan\Processing;
 
+use LogicException;
 use TwigStan\PHPStan\Analysis\PHPStanAnalysisResult;
 use TwigStan\PHPStan\Collector\TemplateContextCollector;
 use TwigStan\Twig\SourceLocation;
@@ -23,16 +24,38 @@ final readonly class TemplateContextFactory
         $templateContext = [];
         foreach ($analysisResult->collectedData as $data) {
             if (is_a($data->collecterType, TemplateContextCollector::class, true)) {
-                foreach ($data->data as $renderData) {
-                    $template = $this->twigFileCanonicalizer->absolute($renderData['template']);
+                if ( ! is_array($data->data)) {
+                    throw new LogicException('The collected template contexts are invalid.');
+                }
 
-                    if (isset($renderData['macro'])) {
-                        $template = TemplateContext::macroKey($template, $renderData['macro']);
+                foreach ($data->data as $renderData) {
+                    if ( ! is_array($renderData)) {
+                        throw new LogicException('The collected template context is invalid.');
                     }
 
-                    $sourceLocation = SourceLocation::decode($renderData['sourceLocation']);
+                    $templateName = $renderData['template'] ?? null;
+                    $macro = $renderData['macro'] ?? null;
+                    $sourceLocationData = $renderData['sourceLocation'] ?? null;
+                    $context = $renderData['context'] ?? null;
 
-                    $templateContext[$template][$sourceLocation->getHash()] = [$sourceLocation, $renderData['context']];
+                    if (
+                        ! is_string($templateName)
+                        || ($macro !== null && ! is_string($macro))
+                        || ! is_array($sourceLocationData)
+                        || ! is_string($context)
+                    ) {
+                        throw new LogicException('The collected template context is invalid.');
+                    }
+
+                    $template = $this->twigFileCanonicalizer->absolute($templateName);
+
+                    if ($macro !== null) {
+                        $template = TemplateContext::macroKey($template, $macro);
+                    }
+
+                    $sourceLocation = SourceLocation::decode($sourceLocationData);
+
+                    $templateContext[$template][$sourceLocation->getHash()] = [$sourceLocation, $context];
                 }
             }
         }

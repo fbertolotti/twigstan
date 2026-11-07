@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TwigStan\Twig\TokenParser;
 
 use PHPStan\DependencyInjection\AutowiredService;
+use Twig\Error\SyntaxError;
 use Twig\Node\Nodes;
 use Twig\Node\PrintNode;
 use Twig\Node\TextNode;
@@ -27,7 +28,11 @@ final class PrintAssertTypeTokenParser extends AbstractTokenParser
 
         $name = $this->parser->parseExpression();
 
-        $expectedType = $stream->expect(Token::STRING_TYPE);
+        $expectedType = $stream->expect(Token::STRING_TYPE)->getValue();
+
+        if ( ! is_string($expectedType)) {
+            throw new SyntaxError('The expected type must be a string.', $token->getLine(), $stream->getSourceContext());
+        }
 
         $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
 
@@ -37,7 +42,7 @@ final class PrintAssertTypeTokenParser extends AbstractTokenParser
         ];
 
         if ($this->compileAssertType) {
-            $nodes[] = new AssertTypeNode($name, $expectedType->getValue(), $token->getLine());
+            $nodes[] = new AssertTypeNode($name, $expectedType, $token->getLine());
         }
 
         return new Nodes($nodes);

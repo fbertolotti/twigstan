@@ -163,7 +163,7 @@ final readonly class PHPStanRunner
         // in the compiled templates, so the instructions are kept for TwigStan to print once after its errors.
         $agentInstructions = null;
         $capturing = false;
-        $exitCode = $process->run(function ($type, $buffer) use ($errorOutput, $output, &$agentInstructions, &$capturing): void {
+        $exitCode = $process->run(function (string $type, string $buffer) use ($errorOutput, $output, &$agentInstructions, &$capturing): void {
             if ($type !== Process::ERR) {
                 $output->write($buffer);
 

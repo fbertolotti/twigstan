@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TwigStan\PHPStan\Analysis;
 
+use InvalidArgumentException;
+
 final readonly class CollectedData
 {
     private function __construct(
@@ -17,10 +19,17 @@ final readonly class CollectedData
      */
     public static function decode(array $json): self
     {
+        $filePath = $json['filePath'] ?? null;
+        $collectorType = $json['collectorType'] ?? null;
+
+        if ( ! is_string($filePath) || ! is_string($collectorType)) {
+            throw new InvalidArgumentException('The collected data is invalid.');
+        }
+
         return new self(
-            $json['data'],
-            $json['filePath'],
-            $json['collectorType'],
+            $json['data'] ?? null,
+            $filePath,
+            $collectorType,
         );
     }
 }

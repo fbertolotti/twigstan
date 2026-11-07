@@ -73,18 +73,50 @@ final class TwigScopeInjector
 
         foreach ($collectedData as $data) {
             if ($data->collecterType === MacroCollector::class) {
-                $macros[$data->filePath] = $data->data['macros'];
+                $macroData = $data->data;
+
+                if ( ! is_array($macroData) || ! is_string($macroData['macros'] ?? null)) {
+                    throw new LogicException('The collected macros are invalid.');
+                }
+
+                $macros[$data->filePath] = $macroData['macros'];
             } elseif ($data->collecterType === BlockContextCollector::class) {
+                if ( ! is_array($data->data)) {
+                    throw new LogicException('The collected block contexts are invalid.');
+                }
+
                 foreach ($data->data as $blockContext) {
-                    $sourceLocation = SourceLocation::decode($blockContext['sourceLocation']);
+                    if ( ! is_array($blockContext)) {
+                        throw new LogicException('The collected block context is invalid.');
+                    }
+
+                    $sourceLocationData = $blockContext['sourceLocation'] ?? null;
+                    $blockName = $blockContext['blockName'] ?? null;
+                    $context = $blockContext['context'] ?? null;
+                    $parent = $blockContext['parent'] ?? null;
+                    $relatedBlockName = $blockContext['relatedBlockName'] ?? null;
+                    $relatedParent = $blockContext['relatedParent'] ?? null;
+
+                    if (
+                        ! is_array($sourceLocationData)
+                        || ($blockName !== null && ! is_string($blockName))
+                        || ! is_string($context)
+                        || ! is_bool($parent)
+                        || ($relatedBlockName !== null && ! is_string($relatedBlockName))
+                        || ! is_bool($relatedParent)
+                    ) {
+                        throw new LogicException('The collected block context is invalid.');
+                    }
+
+                    $sourceLocation = SourceLocation::decode($sourceLocationData);
 
                     $contextBeforeBlockByFilename[$sourceLocation->last()->fileName][] = [
-                        'blockName' => $blockContext['blockName'],
+                        'blockName' => $blockName,
                         'sourceLocation' => $sourceLocation,
-                        'context' => $this->parseContext($blockContext['context']),
-                        'parent' => $blockContext['parent'],
-                        'relatedBlockName' => $blockContext['relatedBlockName'],
-                        'relatedParent' => $blockContext['relatedParent'],
+                        'context' => $this->parseContext($context),
+                        'parent' => $parent,
+                        'relatedBlockName' => $relatedBlockName,
+                        'relatedParent' => $relatedParent,
                     ];
                 }
             }

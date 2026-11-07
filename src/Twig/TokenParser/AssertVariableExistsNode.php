@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TwigStan\Twig\TokenParser;
 
+use LogicException;
 use Twig\Attribute\YieldReady;
 use Twig\Compiler;
 use Twig\Node\Expression\AbstractExpression;
@@ -23,13 +24,19 @@ final class AssertVariableExistsNode extends Node
 
     public function compile(Compiler $compiler): void
     {
+        $certainty = $this->getAttribute('certainty');
+
+        if ( ! is_string($certainty)) {
+            throw new LogicException('The certainty must be a string.');
+        }
+
         $compiler
             ->addDebugInfo($this)
             ->write("\PHPStan\Testing\assertVariableCertainty(\n")
             ->indent()
             ->write(sprintf(
                 '\PHPStan\TrinaryLogic::create%s()',
-                ucfirst($this->getAttribute('certainty')),
+                ucfirst($certainty),
             ))
             ->raw(",\n")
             ->write("// @phpstan-ignore offsetAccess.notFound\n")

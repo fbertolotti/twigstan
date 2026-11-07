@@ -136,7 +136,7 @@ final class ErrorLocationTest extends TestCase
         $errorOutput = new BufferedOutput();
         $result = $command->analyze([], $output, $errorOutput, false, false, null);
 
-        self::assertNotEmpty($result->errors, $output->fetch() . $errorOutput->fetch());
+        self::assertNotSame([], $result->errors, $output->fetch() . $errorOutput->fetch());
 
         $locations = [];
         foreach ($result->errors as $error) {

@@ -187,7 +187,7 @@ final class InlineParentTemplateVisitor extends NodeVisitorAbstract
      *
      * @param array<Node\Stmt> $stmts
      *
-     * @return array<Node\Stmt>
+     * @return list<Node\Stmt>
      */
     private function withoutChildImports(array $stmts): array
     {

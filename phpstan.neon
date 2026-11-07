@@ -1,6 +1,8 @@
 includes:
 	- phar://phpstan.phar/conf/bleedingEdge.neon
 	- phpstan-baseline.neon
+	# Not registered by phpstan/extension-installer (see composer.json), so that the rules are not applied to the compiled templates in the tests.
+	- vendor/shipmonk/phpstan-rules/rules.neon
 parameters:
 	level: max
 	paths:
@@ -30,6 +32,16 @@ parameters:
 		-
 			identifier: method.internal
 			message: '#internal method Twig\\#'
+	shipmonkRules:
+		# Noisy for this codebase: closure parameter types are inferred, and exceptions in callables are not tracked.
+		enforceClosureParamNativeTypehint:
+			enabled: false
+		forbidCheckedExceptionInCallable:
+			enabled: false
+		enforceReadonlyPublicProperty:
+			enabled: false
+		forbidVariableTypeOverwriting:
+			enabled: false
 	dynamicConstantNames:
 		- Twig\Environment::MAJOR_VERSION
 		- Twig\Environment::VERSION_ID

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TwigStan\EndToEnd;
 
-use JsonException;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -60,7 +59,6 @@ abstract class AbstractEndToEndTestCase extends TestCase
      * @param list<string> $files
      *
      * @throws Throwable
-     * @throws JsonException
      */
     protected function runAnalysis(string $directory, array $files = []): void
     {
@@ -81,7 +79,7 @@ abstract class AbstractEndToEndTestCase extends TestCase
                 ),
                 ...array_values(array_map(
                     fn(SplFileInfo $file) => $file->getPathname(),
-                    iterator_to_array(Finder::create()->files()->name('*Test.php')->in($directory)->depth(0)),
+                    iterator_to_array(Finder::create()->files()->name('*Test.php')->in($directory)->depth(0), false),
                 )),
             ];
         }

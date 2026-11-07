@@ -68,6 +68,6 @@ final class GivenFilesFinder
             ->append($files)
             ->sortByName();
 
-        return iterator_to_array($finder);
+        return iterator_to_array($finder, true);
     }
 }

@@ -72,7 +72,7 @@ final readonly class GetAttributeCheck
             $scope,
             $arguments['object'],
             '',
-            static fn(Type $type): bool => true, // To complicate to filter unions, we'll do it manually.
+            static fn(): bool => true, // To complicate to filter unions, we'll do it manually.
         )->getType();
 
         if ($objectType instanceof MixedType) {

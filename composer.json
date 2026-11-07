@@ -29,10 +29,12 @@
         "friendsofphp/php-cs-fixer": "^3.59",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.1",
         "phpstan/phpstan-strict-rules": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^11.4",
         "shipmonk/composer-dependency-analyser": "^1.7",
+        "shipmonk/phpstan-rules": "^4.4",
         "staabm/phpstan-todo-by": "^0.2",
         "symfony/dependency-injection": "^6.4 || ^7.1 || ^8.0",
         "symfony/form": "^6.4 || ^7.1 || ^8.0",
@@ -70,5 +72,12 @@
             "phpstan/extension-installer": true
         },
         "sort-packages": true
+    },
+    "extra": {
+        "phpstan/extension-installer": {
+            "ignore": [
+                "shipmonk/phpstan-rules"
+            ]
+        }
     }
 }

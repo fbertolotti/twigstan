@@ -89,7 +89,12 @@ final class AppUserContext
     {
         $controllers = array_filter(
             $this->controllers[$sourceLocation->fileName] ?? [],
-            fn(array $controller) => $sourceLocation->lineNumber >= $controller[0]->getStartLine() && $sourceLocation->lineNumber <= $controller[0]->getEndLine(),
+            function (array $controller) use ($sourceLocation): bool {
+                $startLine = $controller[0]->getStartLine();
+                $endLine = $controller[0]->getEndLine();
+
+                return $startLine !== false && $endLine !== false && $sourceLocation->lineNumber >= $startLine && $sourceLocation->lineNumber <= $endLine;
+            },
         );
 
         // Templates rendered outside of a controller can be rendered without a request.

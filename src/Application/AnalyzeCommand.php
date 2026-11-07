@@ -599,13 +599,15 @@ final class AnalyzeCommand extends Command
                     continue;
                 }
 
-                if ($error->twigFile === null) {
+                $twigFile = $error->twigFile;
+
+                if ($twigFile === null) {
                     throw new LogicException('Error without Twig file should not be present here.');
                 }
 
                 $errorsCount++;
 
-                $key = $error->message . "\n" . $error->identifier . "\n" . $error->twigFile;
+                $key = $error->message . "\n" . ($error->identifier ?? '') . "\n" . $twigFile;
 
                 if (array_key_exists($key, $baselineErrors)) {
                     $baselineErrors[$key]->increaseCount();

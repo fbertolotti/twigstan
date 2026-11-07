@@ -31,7 +31,7 @@ final class User
     }
 
     /**
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getRoles()
     {

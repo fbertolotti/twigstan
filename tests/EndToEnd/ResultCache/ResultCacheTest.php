@@ -29,7 +29,7 @@ final class ResultCacheTest extends TestCase
         // The render points of the second run come from the result cache.
         $warm = $command->analyze([], new BufferedOutput(), new BufferedOutput(), false, false, null);
 
-        self::assertNotEmpty($cold->context->context);
+        self::assertNotSame([], $cold->context->context);
         self::assertEquals($cold->context, $warm->context);
         self::assertEquals($cold->errors, $warm->errors);
     }

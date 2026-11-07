@@ -100,6 +100,6 @@ final class FilesFinder
                 return true;
             });
 
-        return iterator_to_array($finder);
+        return iterator_to_array($finder, true);
     }
 }

@@ -65,7 +65,7 @@ final readonly class RandomReturnType implements DynamicStaticMethodReturnTypeEx
             $argType = $argType->toInteger();
 
             if ($max->isNull()->yes()) {
-                if (count($argType->getConstantScalarValues()) === 1 && $argType->getConstantScalarValues()[0] < 0) {
+                if ($argType instanceof ConstantIntegerType && $argType->getValue() < 0) {
                     $max = new ConstantIntegerType(0);
                     $min = $argType;
                 } else {

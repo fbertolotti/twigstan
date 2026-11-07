@@ -30,7 +30,7 @@ final readonly class SourceLocation implements Stringable, IteratorAggregate
         /**
          * @var non-empty-list<SourceLocation> $nodes
          */
-        $nodes = iterator_to_array($current);
+        $nodes = iterator_to_array($current, false);
 
         $last = $nodes[array_key_last($nodes)];
 

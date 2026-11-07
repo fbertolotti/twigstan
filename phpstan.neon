@@ -3,6 +3,8 @@ includes:
 	- phpstan-baseline.neon
 	# Not registered by phpstan/extension-installer (see composer.json), so that the rules are not applied to the compiled templates in the tests.
 	- vendor/shipmonk/phpstan-rules/rules.neon
+rules:
+	- TwigStan\PHPStan\Rules\ForbidSuppressingTagsRule
 parameters:
 	level: max
 	paths:
@@ -17,6 +19,8 @@ parameters:
 	treatPhpDocTypesAsCertain: false
 	errorFormat: ticketswap
 	editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+	excludePaths:
+		- tests/PHPStan/Rules/data
 	bootstrapFiles:
 		- stubs/functions.php
 	# The stubs are analysed as project stubs here, so PHPStan reports any errors in them.
@@ -32,6 +36,10 @@ parameters:
 		-
 			identifier: method.internal
 			message: '#internal method Twig\\#'
+		# The config files receive $config from the file that includes them.
+		-
+			identifier: twigstan.inlineVar
+			path: tests/twigstan-*.php
 	shipmonkRules:
 		# Noisy for this codebase: closure parameter types are inferred, and exceptions in callables are not tracked.
 		enforceClosureParamNativeTypehint:

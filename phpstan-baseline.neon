@@ -19,3 +19,63 @@ parameters:
 			message: "#^Method TwigStan\\\\Twig\\\\TwigFileCanonicalizer\\:\\:findNamespacesWithinMainNamespace\\(\\) should return array\\<string, list\\<string\\>\\> but returns array\\<int\\|string, non\\-empty\\-list\\<string\\>\\>\\.$#"
 			count: 1
 			path: src/Twig/TwigFileCanonicalizer.php
+
+		-
+			message: "#^Do not override the type of a variable with an inline @var tag\\: type the code instead\\.$#"
+			identifier: twigstan.inlineVar
+			count: 1
+			path: src/Application/AnalyzeCommand.php
+
+		-
+			message: "#^Do not ignore PHPStan errors with a comment\\: fix the code, or ignore the error in the PHPStan configuration\\.$#"
+			identifier: twigstan.ignoreComment
+			count: 1
+			path: src/PHPStan/AnalysisResultToJson.php
+
+		-
+			message: "#^Do not ignore PHPStan errors with a comment\\: fix the code, or ignore the error in the PHPStan configuration\\.$#"
+			identifier: twigstan.ignoreComment
+			count: 3
+			path: src/PHPStan/Collector/MacroCollector.php
+
+		-
+			message: "#^Do not ignore PHPStan errors with a comment\\: fix the code, or ignore the error in the PHPStan configuration\\.$#"
+			identifier: twigstan.ignoreComment
+			count: 1
+			path: src/PHPStan/DynamicReturnType/TypeHintReturnType.php
+
+		-
+			message: "#^Do not ignore PHPStan errors with a comment\\: fix the code, or ignore the error in the PHPStan configuration\\.$#"
+			identifier: twigstan.ignoreComment
+			count: 5
+			path: src/PHPStan/GetAttributeCheck.php
+
+		-
+			message: "#^Do not ignore PHPStan errors with a comment\\: fix the code, or ignore the error in the PHPStan configuration\\.$#"
+			identifier: twigstan.ignoreComment
+			count: 1
+			path: src/Processing/Flattening/PhpVisitor/InjectBlockMethodsFromParentVisitor.php
+
+		-
+			message: "#^Do not override the type of a variable with an inline @var tag\\: type the code instead\\.$#"
+			identifier: twigstan.inlineVar
+			count: 1
+			path: src/Processing/TemplateContextFactory.php
+
+		-
+			message: "#^Do not override the type of a variable with an inline @var tag\\: type the code instead\\.$#"
+			identifier: twigstan.inlineVar
+			count: 1
+			path: src/Twig/SourceLocation.php
+
+		-
+			message: "#^Do not ignore PHPStan errors with a comment\\: fix the code, or ignore the error in the PHPStan configuration\\.$#"
+			identifier: twigstan.ignoreComment
+			count: 1
+			path: tests/EndToEnd/GetAttribute/Fixtures/Account.php
+
+		-
+			message: "#^Do not ignore PHPStan errors with a comment\\: fix the code, or ignore the error in the PHPStan configuration\\.$#"
+			identifier: twigstan.ignoreComment
+			count: 1
+			path: tests/twig-loader.php

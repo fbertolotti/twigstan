@@ -12,6 +12,7 @@ Tasks are defined in `castor.php` (Castor task runner). A Docker setup is provid
 docker compose up -d                       # dev container, code mounted at /app
 docker compose exec php composer install
 docker compose exec php castor <task>      # any task below
+bin/castor <task>                          # same, from the host: starts the container if needed
 docker compose run --rm tests              # one-off full test run
 PHP_VERSION=8.4 docker compose up -d --build   # other PHP version (CI runs 8.3, 8.4, 8.5)
 ```

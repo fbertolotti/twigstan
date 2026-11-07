@@ -14,6 +14,9 @@ use function Castor\io;
 use function Castor\run;
 use Symfony\Component\Console\Input\InputOption;
 
+// Castor changes to the directory of castor.php, which is the default in Castor 2.0.
+defined('CASTOR_USE_CHDIR') || define('CASTOR_USE_CHDIR', true);
+
 #[AsTask(name: 'install', namespace: 'composer', aliases: ['install'])]
 function composer_install(): int
 {

@@ -46,6 +46,10 @@ final class TemplateContextTest extends TestCase
         $incoming = [];
         $expected = $renderPoints;
         foreach ($updates as $hash => $type) {
+            if ( ! isset($renderPoints[$hash])) {
+                self::fail(sprintf('Unknown render point "%s".', $hash));
+            }
+
             $incoming[$hash] = [$renderPoints[$hash][0], $type];
             $expected[$hash] = $incoming[$hash];
         }

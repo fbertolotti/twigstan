@@ -201,7 +201,13 @@ final class AnalyzeCommand extends Command
         // Errors of PHPStan itself, such as crashes, make the result incomplete.
         $notFileSpecificErrors = $result->fileSpecificErrors;
         foreach ($result->runs as $run) {
-            foreach ($run->phpstanAnalysisResults[PHPStanRunMode::AnalyzeTwigTemplates->value]->notFileSpecificErrors ?? [] as $error) {
+            $analysisResult = $run->phpstanAnalysisResults[PHPStanRunMode::AnalyzeTwigTemplates->value] ?? null;
+
+            if ($analysisResult === null) {
+                continue;
+            }
+
+            foreach ($analysisResult->notFileSpecificErrors as $error) {
                 $errorOutput->writeln(sprintf('<error>Error</error> %s', $error));
                 $notFileSpecificErrors[] = $error;
             }
@@ -289,19 +295,27 @@ final class AnalyzeCommand extends Command
         $twigFileNames = [];
         $phpFileNames = [];
         foreach ($files as $file) {
+            $realPath = $file->getRealPath();
+
+            if ($realPath === false) {
+                $errorOutput->writeln(sprintf('<error>File does not exist: %s</error>', $file->getPathname()));
+
+                continue;
+            }
+
             if (in_array($file->getExtension(), $this->phpExtensions, true)) {
-                $phpFileNames[] = $file->getRealPath();
+                $phpFileNames[] = $realPath;
 
                 continue;
             }
 
             if (in_array($file->getExtension(), $this->twigExtensions, true)) {
-                $twigFileNames[] = $file->getRealPath();
+                $twigFileNames[] = $realPath;
 
                 continue;
             }
 
-            $errorOutput->writeln(sprintf('<error>Unsupported file type: %s</error>', $file->getRealPath()));
+            $errorOutput->writeln(sprintf('<error>Unsupported file type: %s</error>', $realPath));
         }
 
         if ($twigFileNames === []) {

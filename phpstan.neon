@@ -9,6 +9,10 @@ parameters:
 		- tests
 	tmpDir: .phpstan
 	reportUnmatchedIgnoredErrors: false
+	checkTooWideReturnTypesInProtectedAndPublicMethods: true
+	checkBenevolentUnionTypes: true
+	reportPossiblyNonexistentConstantArrayOffset: true
+	treatPhpDocTypesAsCertain: false
 	errorFormat: ticketswap
 	editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
 	bootstrapFiles:

@@ -84,8 +84,15 @@ final class FilesFinder
             ->append($files)
             ->sortByName()
             ->filter(function (SplFileInfo $file) {
+                $realPath = $file->getRealPath();
+
+                // Files that cannot be resolved, such as broken symlinks, cannot be analyzed.
+                if ($realPath === false) {
+                    return false;
+                }
+
                 foreach ($this->exclusions as $exclude) {
-                    if (fnmatch($exclude, $file->getRealPath(), FNM_NOESCAPE)) {
+                    if (fnmatch($exclude, $realPath, FNM_NOESCAPE)) {
                         return false;
                     }
                 }

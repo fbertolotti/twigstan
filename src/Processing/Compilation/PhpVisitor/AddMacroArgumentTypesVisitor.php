@@ -51,7 +51,7 @@ final class AddMacroArgumentTypesVisitor extends NodeVisitorAbstract
         $closure = $args[1]->value;
 
         $typeHints = [];
-        foreach ($closure->params as $position => $param) {
+        foreach (array_values($closure->params) as $position => $param) {
             if ($param->variadic || ! $param->var instanceof Expr\Variable || ! is_string($param->var->name)) {
                 continue;
             }
@@ -74,7 +74,7 @@ final class AddMacroArgumentTypesVisitor extends NodeVisitorAbstract
         }
 
         // Find: $context = ["seconds" => $seconds, "varargs" => $varargs] + $this->env->getGlobals();
-        foreach ($closure->stmts as $index => $stmt) {
+        foreach (array_values($closure->stmts) as $index => $stmt) {
             if (
                 $stmt instanceof Stmt\Expression
                 && $stmt->expr instanceof Expr\Assign

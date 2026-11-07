@@ -590,9 +590,6 @@ final class AnalyzeCommand extends Command
         if ($generateBaselineFile !== null) {
             $errorsCount = 0;
 
-            /**
-             * @var array<string, BaselineError> $baselineErrors
-             */
             $baselineErrors = [];
             foreach ($errors as $error) {
                 if ( ! $error->canBeIgnored) {

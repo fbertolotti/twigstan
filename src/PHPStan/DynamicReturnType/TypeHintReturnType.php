@@ -60,7 +60,6 @@ final readonly class TypeHintReturnType implements FunctionParameterOutTypeExten
 
         $context = $scope->getType($funcCall->getArgs()[0]->value);
 
-        // @phpstan-ignore phpstanApi.instanceofType
         if ( ! $context instanceof ConstantArrayType) {
             return new ErrorType();
         }

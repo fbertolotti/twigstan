@@ -19,7 +19,7 @@ $environment = new Environment($loader);
 $environment->addGlobal('app', new AppVariable());
 $environment->addExtension(new FormExtension());
 // Registered by the Symfony UX Twig component bundle in applications.
-$environment->addExtension(new ComponentExtension()); // @phpstan-ignore new.internalClass
+$environment->addExtension(new ComponentExtension());
 // Twig compiles closures to $this->env->getFunction('name')->getCallable(), see LevelMax/closure.twig
 $environment->addFunction(new TwigFunction('closure_function', fn(string $value, int $times = 1): string => str_repeat($value, $times)));
 $environment->addFilter(new TwigFilter('closure_filter', fn(string $value): int => strlen($value)));

@@ -44,7 +44,6 @@ final readonly class AnalysisResultToJson implements ErrorFormatter
                 'notFileSpecificErrors' => $analysisResult->getNotFileSpecificErrors(),
                 'collectedData' => array_filter(
                     $analysisResult->getCollectedData(),
-                    // @phpstan-ignore phpstanApi.runtimeReflection
                     fn($collectedData) => is_a($collectedData->getCollectorType(), ExportingCollector::class, true),
                 ),
             ], $this->debugMode ? JSON_PRETTY_PRINT : 0),

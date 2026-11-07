@@ -27,10 +27,10 @@ final readonly class SourceLocation implements Stringable, IteratorAggregate
             return $toAppend;
         }
 
-        /**
-         * @var non-empty-list<SourceLocation> $nodes
-         */
-        $nodes = iterator_to_array($current, false);
+        $nodes = [$current];
+        for ($previous = $current->previous; $previous !== null; $previous = $previous->previous) {
+            $nodes[] = $previous;
+        }
 
         $last = $nodes[array_key_last($nodes)];
 

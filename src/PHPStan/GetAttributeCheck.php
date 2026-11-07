@@ -224,7 +224,6 @@ final readonly class GetAttributeCheck
 
         return [
             $objectType->getOffsetValueType($offsetType),
-            // @phpstan-ignore phpstanApi.method
             $this->prefixErrorIdentifier($this->nonexistentOffsetInArrayDimFetchCheck->check(
                 $scope,
                 new TypeExpr($objectType),
@@ -266,7 +265,6 @@ final readonly class GetAttributeCheck
                 || $objectType->hasOffsetValueType($propertyOrMethodType)->yes()
             ) {
                 return [$objectType->getOffsetValueType($propertyOrMethodType), [
-                    // @phpstan-ignore phpstanApi.method
                     ...$this->prefixErrorIdentifier($this->nonexistentOffsetInArrayDimFetchCheck->check(
                         $scope,
                         new TypeExpr($objectType),
@@ -313,7 +311,6 @@ final readonly class GetAttributeCheck
                 }
 
                 $methodName = $prefix . $propertyOrMethod;
-                // @phpstan-ignore phpstanApi.method
                 [, $methodReflection] = $this->methodCallCheck->check($scope, $methodName, new TypeExpr($objectType), new Identifier($methodName));
 
                 if ($methodReflection === null) {
@@ -338,7 +335,6 @@ final readonly class GetAttributeCheck
                 return [
                     $parametersAcceptor->getReturnType(),
                     [
-                        // @phpstan-ignore phpstanApi.method
                         ...$this->prefixErrorIdentifier($this->parametersCheck->check(
                             $parametersAcceptor,
                             $scope,
@@ -378,7 +374,6 @@ final readonly class GetAttributeCheck
         // We already excluded `Yes` certainty, but it can still be `Maybe` for ArrayObject and ArrayAccess.
         if ($callType !== Template::METHOD_CALL && $objectType->hasOffsetValueType($propertyOrMethodType)->maybe()) {
             return [$objectType->getOffsetValueType($propertyOrMethodType), [
-                // @phpstan-ignore phpstanApi.method
                 ...$this->prefixErrorIdentifier($this->nonexistentOffsetInArrayDimFetchCheck->check(
                     $scope,
                     new TypeExpr($objectType),

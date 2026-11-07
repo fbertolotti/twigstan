@@ -1,6 +1,5 @@
 includes:
 	- phar://phpstan.phar/conf/bleedingEdge.neon
-	- phpstan-baseline.neon
 	# Not registered by phpstan/extension-installer (see composer.json), so that the rules are not applied to the compiled templates in the tests.
 	- vendor/shipmonk/phpstan-rules/rules.neon
 rules:
@@ -36,6 +35,49 @@ parameters:
 		-
 			identifier: method.internal
 			message: '#internal method Twig\\#'
+		# TwigStan extends PHPStan, so it relies on its unstable API by design.
+		-
+			identifier: phpstanApi.class
+			paths:
+				- src/PHPStan/AnalysisResultToJson.php
+				- src/PHPStan/Collector/MacroCollector.php
+				- src/PHPStan/DynamicReturnType/TypeHintReturnType.php
+				- src/PHPStan/GetAttributeCheck.php
+		-
+			identifier: phpstanApi.instanceofType
+			paths:
+				- src/PHPStan/AnalysisResultToJson.php
+				- src/PHPStan/Collector/MacroCollector.php
+				- src/PHPStan/DynamicReturnType/TypeHintReturnType.php
+				- src/PHPStan/GetAttributeCheck.php
+		-
+			identifier: phpstanApi.method
+			paths:
+				- src/PHPStan/AnalysisResultToJson.php
+				- src/PHPStan/Collector/MacroCollector.php
+				- src/PHPStan/DynamicReturnType/TypeHintReturnType.php
+				- src/PHPStan/GetAttributeCheck.php
+		-
+			identifier: phpstanApi.runtimeReflection
+			paths:
+				- src/PHPStan/AnalysisResultToJson.php
+				- src/PHPStan/Collector/MacroCollector.php
+				- src/PHPStan/DynamicReturnType/TypeHintReturnType.php
+				- src/PHPStan/GetAttributeCheck.php
+		-
+			identifier: phpstanApi.new
+			paths:
+				- src/PHPStan/DynamicReturnType/Filter/SplitReturnType.php
+				- src/PHPStan/DynamicReturnType/Function/CycleReturnType.php
+				- src/PHPStan/DynamicReturnType/Function/RandomReturnType.php
+		# Registered by the Symfony UX Twig component bundle in applications.
+		-
+			identifier: new.internalClass
+			path: tests/twig-loader.php
+		# The fixture exists to be read through Twig, so the property is never read in PHP.
+		-
+			identifier: property.onlyWritten
+			path: tests/EndToEnd/GetAttribute/Fixtures/Account.php
 		# The config files receive $config from the file that includes them.
 		-
 			identifier: twigstan.inlineVar

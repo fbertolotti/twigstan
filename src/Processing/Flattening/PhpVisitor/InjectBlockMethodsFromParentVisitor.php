@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace TwigStan\Processing\Flattening\PhpVisitor;
 
+use LogicException;
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use TwigStan\Twig\SourceLocation;
@@ -12,7 +14,7 @@ use TwigStan\Twig\SourceLocation;
 final class InjectBlockMethodsFromParentVisitor extends NodeVisitorAbstract
 {
     /**
-     * @param array<string, array{Node\Stmt\ClassMethod, SourceLocation}> $blocks
+     * @param array<string, array{Stmt\ClassMethod, SourceLocation}> $blocks
      */
     public function __construct(
         private array $blocks,
@@ -22,17 +24,17 @@ final class InjectBlockMethodsFromParentVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node): null
     {
-        if ($node instanceof Node\Stmt\Class_) {
+        if ($node instanceof Stmt\Class_) {
             $this->classes++;
         }
 
         return null;
     }
 
-    public function leaveNode(Node $node): ?Node\Stmt\Class_
+    public function leaveNode(Node $node): ?Stmt\Class_
     {
         // Embedded templates are compiled to more classes after the class of the template, and they have blocks of their own.
-        if ( ! $node instanceof Node\Stmt\Class_ || $this->classes !== 1) {
+        if ( ! $node instanceof Stmt\Class_ || $this->classes !== 1) {
             return null;
         }
 
@@ -46,8 +48,16 @@ final class InjectBlockMethodsFromParentVisitor extends NodeVisitorAbstract
             $traverser = new NodeTraverser();
             $traverser->addVisitor(new AppendSourceLocationVisitor($sourceLocation));
 
-            // @phpstan-ignore assign.propertyType (We pass in Stmt nodes and expect them to be returned)
-            $method->stmts = $traverser->traverse($method->stmts);
+            $stmts = [];
+            foreach ($traverser->traverse($method->stmts) as $stmt) {
+                if ( ! $stmt instanceof Stmt) {
+                    throw new LogicException('Expected the traversed method statements to remain statements.');
+                }
+
+                $stmts[] = $stmt;
+            }
+
+            $method->stmts = $stmts;
 
             $node->stmts[] = $method;
         }

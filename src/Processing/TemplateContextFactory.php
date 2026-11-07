@@ -18,9 +18,6 @@ final readonly class TemplateContextFactory
 
     public function create(PHPStanAnalysisResult $analysisResult): TemplateContext
     {
-        /**
-         * @var array<string, array<string, array{SourceLocation, string}>> $templateContext
-         */
         $templateContext = [];
         foreach ($analysisResult->collectedData as $data) {
             if (is_a($data->collecterType, TemplateContextCollector::class, true)) {

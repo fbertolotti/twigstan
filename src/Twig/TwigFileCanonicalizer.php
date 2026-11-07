@@ -18,7 +18,7 @@ final class TwigFileCanonicalizer
     private FilesystemLoader $loader;
 
     /**
-     * @var array<string, list<string>>
+     * @var array<int|string, list<string>>
      */
     private array $namespacesWithinMainNamespace;
 
@@ -104,7 +104,7 @@ final class TwigFileCanonicalizer
     }
 
     /**
-     * @return array<string, list<string>>
+     * @return array<int|string, list<string>>
      */
     private function findNamespacesWithinMainNamespace(): array
     {

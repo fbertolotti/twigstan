@@ -47,5 +47,5 @@ End-to-end tests live in `tests/EndToEnd/<Case>/`: each case folder holds templa
 
 - PSR-4: `TwigStan\` maps to `src/` and, for tests, `tests/`. `TwigStan\Demo\` maps to `demo/src/`.
 - Code style is `.php-cs-fixer.php` (PER-CS2.0 plus custom rules) and `.twig-cs-fixer.php`, with `.editorconfig` enforced; run the fixers before committing.
-- `phpstan.neon` analyzes `bin/twigstan`, `src` and `tests` at level 8 with a baseline in `phpstan-baseline.neon`. Use of Twig internals is intentional and ignored there.
+- `phpstan.neon` analyzes `bin/twigstan`, `src` and `tests` at level max with no baseline. Use of Twig and PHPStan internals is intentional and ignored in `phpstan.neon`.
 - `demo/` and `tests/` are `export-ignore`d, so they are not shipped in the Composer archive.

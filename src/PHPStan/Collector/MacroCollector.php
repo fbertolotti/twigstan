@@ -42,7 +42,6 @@ final readonly class MacroCollector implements Collector, ExportingCollector
 
         $macros = $returnScope->getVariableType('macros');
 
-        // @phpstan-ignore phpstanApi.instanceofType
         if ( ! $macros instanceof IntersectionType) {
             return null;
         }
@@ -50,12 +49,10 @@ final readonly class MacroCollector implements Collector, ExportingCollector
         $builder = ConstantArrayTypeBuilder::createEmpty();
 
         foreach ($macros->getTypes() as $type) {
-            // @phpstan-ignore phpstanApi.class
             if ( ! $type instanceof HasOffsetValueType) {
                 continue;
             }
 
-            // @phpstan-ignore phpstanApi.method, phpstanApi.method
             $builder->setOffsetValueType($type->getOffsetType(), $type->getValueType());
         }
 

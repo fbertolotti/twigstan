@@ -5,12 +5,16 @@ on:
     push:
         branches: [ main ]
 
+permissions:
+    contents: read
+
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
     tests:
         runs-on: ${{ matrix.operating-system }}
+        timeout-minutes: 30
         strategy:
             fail-fast: false
             matrix:
@@ -21,16 +25,16 @@ jobs:
         name: Tests with PHP ${{ matrix.php }}, Twig ${{ matrix.twig }} & ${{ matrix.dependency-versions }} dependencies on ${{ matrix.operating-system }}
         steps:
             -   name: Checkout
-                uses: actions/checkout@v4
+                uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
             -   name: Setup PHP
-                uses: shivammathur/setup-php@v2
+                uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
                 with:
                     php-version: '${{ matrix.php }}'
                     coverage: none
 
             -   name: Install Composer packages
-                uses: ramsey/composer-install@v3
+                uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
                 with:
                     dependency-versions: '${{ matrix.dependency-versions }}'
 
@@ -43,6 +47,7 @@ jobs:
 
     code-style:
         runs-on: ${{ matrix.operating-system }}
+        timeout-minutes: 15
         strategy:
             fail-fast: false
             matrix:
@@ -51,26 +56,30 @@ jobs:
         name: PHP CS Fixer with ${{ matrix.php }} on ${{ matrix.operating-system }}
         steps:
             -   name: Checkout code
-                uses: actions/checkout@v4
+                uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
                 with:
                     fetch-depth: 0
 
             -   name: Set up PHP
-                uses: shivammathur/setup-php@v2
+                uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
                 with:
                     php-version: '${{ matrix.php }}'
                     coverage: none
 
             -   name: Install Castor
                 # The static binary bundles its own PHP, because Castor requires a newer PHP than TwigStan
+                env:
+                    CASTOR_VERSION: v1.9.1
+                    CASTOR_SHA256: 487ec4748875128cca4a05e965b05327e5fb47f878e344f7dec41c8a79caf3d6
                 run: |
                     mkdir -p "$HOME/bin"
-                    curl -fsSL https://github.com/jolicode/castor/releases/latest/download/castor.linux-amd64 -o "$HOME/bin/castor"
+                    curl -fsSL "https://github.com/jolicode/castor/releases/download/${CASTOR_VERSION}/castor.linux-amd64" -o "$HOME/bin/castor"
+                    echo "${CASTOR_SHA256}  $HOME/bin/castor" | sha256sum --check --strict
                     chmod +x "$HOME/bin/castor"
                     echo "$HOME/bin" >> "$GITHUB_PATH"
 
             -   name: Install Composer packages
-                uses: ramsey/composer-install@v3
+                uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
 
             -   name: Run PHP CS Fixer
                 run: castor php-cs-fixer --no-fix
@@ -86,6 +95,7 @@ jobs:
 
     phpstan:
         runs-on: ${{ matrix.operating-system }}
+        timeout-minutes: 15
         strategy:
             fail-fast: false
             matrix:
@@ -94,30 +104,35 @@ jobs:
         name: PHPStan with ${{ matrix.php }} on ${{ matrix.operating-system }}
         steps:
             -   name: Checkout code
-                uses: actions/checkout@v4
+                uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
             -   name: Setup PHP
-                uses: shivammathur/setup-php@v2
+                uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
                 with:
                     php-version: '${{ matrix.php }}'
                     coverage: none
 
             -   name: Install Castor
                 # The static binary bundles its own PHP, because Castor requires a newer PHP than TwigStan
+                env:
+                    CASTOR_VERSION: v1.9.1
+                    CASTOR_SHA256: 487ec4748875128cca4a05e965b05327e5fb47f878e344f7dec41c8a79caf3d6
                 run: |
                     mkdir -p "$HOME/bin"
-                    curl -fsSL https://github.com/jolicode/castor/releases/latest/download/castor.linux-amd64 -o "$HOME/bin/castor"
+                    curl -fsSL "https://github.com/jolicode/castor/releases/download/${CASTOR_VERSION}/castor.linux-amd64" -o "$HOME/bin/castor"
+                    echo "${CASTOR_SHA256}  $HOME/bin/castor" | sha256sum --check --strict
                     chmod +x "$HOME/bin/castor"
                     echo "$HOME/bin" >> "$GITHUB_PATH"
 
             -   name: Install Composer packages
-                uses: ramsey/composer-install@v3
+                uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
 
             -   name: Run PHPStan
                 run: castor phpstan --no-local
 
     composer:
         runs-on: ${{ matrix.operating-system }}
+        timeout-minutes: 15
         strategy:
             fail-fast: false
             matrix:
@@ -125,24 +140,28 @@ jobs:
                 php: [ '8.3', '8.4', '8.5' ]
         steps:
             -   name: Checkout code
-                uses: actions/checkout@v4
+                uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
             -   name: Set up PHP
-                uses: shivammathur/setup-php@v2
+                uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
                 with:
                     php-version: '${{ matrix.php }}'
                     coverage: none
 
             -   name: Install Castor
                 # The static binary bundles its own PHP, because Castor requires a newer PHP than TwigStan
+                env:
+                    CASTOR_VERSION: v1.9.1
+                    CASTOR_SHA256: 487ec4748875128cca4a05e965b05327e5fb47f878e344f7dec41c8a79caf3d6
                 run: |
                     mkdir -p "$HOME/bin"
-                    curl -fsSL https://github.com/jolicode/castor/releases/latest/download/castor.linux-amd64 -o "$HOME/bin/castor"
+                    curl -fsSL "https://github.com/jolicode/castor/releases/download/${CASTOR_VERSION}/castor.linux-amd64" -o "$HOME/bin/castor"
+                    echo "${CASTOR_SHA256}  $HOME/bin/castor" | sha256sum --check --strict
                     chmod +x "$HOME/bin/castor"
                     echo "$HOME/bin" >> "$GITHUB_PATH"
 
             -   name: Install Composer packages
-                uses: ramsey/composer-install@v3
+                uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
 
             -   name: Normalize Composer file
                 run: castor composer-normalize

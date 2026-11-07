@@ -19,11 +19,11 @@ jobs:
         timeout-minutes: 10
         steps:
             -   name: Checkout
-                uses: actions/checkout@v4.2.2
+                uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
                 with:
                     ref: ${{ github.event.pull_request.head.sha }}
                     fetch-depth: 0
             -   name: Comment composer.lock diff
-                uses: WyriHaximus/github-action-composer.lock-diff@v2.1.0
+                uses: WyriHaximus/github-action-composer.lock-diff@af833768d62a18c535006320cc0bc2e349a80e62 # v2.1.0
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -23,6 +23,7 @@
         "twig/twig": "^3.30.0"
     },
     "require-dev": {
+        "brianium/paratest": "^7.7",
         "editorconfig-checker/editorconfig-checker": "^10.6",
         "ergebnis/composer-normalize": "^2.43",
         "erickskrauch/php-cs-fixer-custom-fixers": "^1.3",

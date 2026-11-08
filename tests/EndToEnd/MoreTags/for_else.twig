@@ -1,0 +1,10 @@
+{% types {
+    items: 'list<int>',
+} %}
+
+{% for item in items %}
+    {% assert_type item 'int' %}
+    {% assert_type loop.index 'int<1, max>' %}
+{% else %}
+    {% assert_type items 'list<int>' %}
+{% endfor %}

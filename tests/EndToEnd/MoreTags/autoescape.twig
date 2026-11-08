@@ -1,0 +1,11 @@
+{% types {
+    html: 'string',
+} %}
+
+{% autoescape 'html' %}
+    {% assert_type html 'string' %}
+{% endautoescape %}
+
+{% verbatim %}{{ not_a_variable }}{% endverbatim %}
+
+{% do html | upper %}

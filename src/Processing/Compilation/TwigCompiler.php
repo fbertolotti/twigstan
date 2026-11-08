@@ -33,6 +33,7 @@ use TwigStan\Processing\Compilation\PhpVisitor\RemoveLineNumberFromGetAttributeC
 use TwigStan\Processing\Compilation\PhpVisitor\RemoveParentCachingVisitor;
 use TwigStan\Processing\Compilation\PhpVisitor\RemoveStringCastFromYieldVisitor;
 use TwigStan\Processing\Compilation\PhpVisitor\RemoveUninitializedMacroNamespaceGuardVisitor;
+use TwigStan\Processing\Compilation\PhpVisitor\RemoveWithMappingGuardVisitor;
 use TwigStan\Processing\Compilation\PhpVisitor\ReplaceGeneratorGuardVisitor;
 use TwigStan\Processing\TemplateContext;
 use TwigStan\Processing\TemplateContextToArrayShape;
@@ -84,6 +85,7 @@ final readonly class TwigCompiler
             new IntegerTemplateIndexVisitor(),
             new MarkEmbeddedComponentContextVisitor(),
             new RemoveStringCastFromYieldVisitor(),
+            new RemoveWithMappingGuardVisitor(),
             new RemoveUninitializedMacroNamespaceGuardVisitor(),
             new MarkMacroCallArgumentsVisitor($twigNode->getSourceContext()->getName()),
             new AddMacroArgumentTypesVisitor($this->templateContextToArrayShape->getByMacro($templateContext, $twigFilePath)),

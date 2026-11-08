@@ -1,0 +1,10 @@
+{% types {
+    name: 'string',
+} %}
+
+{% apply upper | trim %}
+    {% assert_type name 'string' %}
+    {% set inside_apply = 1 %}
+{% endapply %}
+
+{% assert_type name 'string' %}

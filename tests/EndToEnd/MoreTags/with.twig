@@ -1,0 +1,13 @@
+{% types {
+    name: 'string',
+} %}
+
+{% with { greeting: 'hello' } %}
+    {% assert_type greeting "'hello'" %}
+    {% assert_type name 'string' %}
+{% endwith %}
+
+{% with { greeting: 'hello' } only %}
+    {% assert_type greeting "'hello'" %}
+    {% assert_type name '*ERROR*' %}
+{% endwith %}

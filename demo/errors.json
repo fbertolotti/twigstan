@@ -1,0 +1,95 @@
+{
+    "errors": [
+        {
+            "message": "Variable 'drafts' does not exist.",
+            "identifier": "offsetAccess.notFound",
+            "tip": null,
+            "twigSourceLocation": "templates/post/archive.html.twig:14",
+            "renderPoints": [
+                "src/Controller/ArchiveController.php:22"
+            ]
+        },
+        {
+            "message": "The attribute \"title\" may not be valid for all possible types of the union \"TwigStan\\Demo\\Model\\Post|null\".",
+            "identifier": "getAttribute.maybeNotFound",
+            "tip": "Cannot get \"title\" on null.",
+            "twigSourceLocation": "templates/post/archive.html.twig:23",
+            "renderPoints": [
+                "src/Controller/ArchiveController.php:22"
+            ]
+        },
+        {
+            "message": "Variable 'missing' does not exist.",
+            "identifier": "offsetAccess.notFound",
+            "tip": null,
+            "twigSourceLocation": "templates/errors.html.twig:6",
+            "renderPoints": [
+                "src/Controller/ErrorsController.php:22"
+            ]
+        },
+        {
+            "message": "Offset 'length' does not exist on 'TwigStan'.",
+            "identifier": "getAttribute.offsetAccess.notFound",
+            "tip": null,
+            "twigSourceLocation": "templates/errors.html.twig:9",
+            "renderPoints": [
+                "src/Controller/ErrorsController.php:22"
+            ]
+        },
+        {
+            "message": "The attribute \"title\" may not be valid for all possible types of the union \"TwigStan\\Demo\\Model\\Post|null\".",
+            "identifier": "getAttribute.maybeNotFound",
+            "tip": "Cannot get \"title\" on null.",
+            "twigSourceLocation": "templates/errors.html.twig:12",
+            "renderPoints": [
+                "src/Controller/ErrorsController.php:22"
+            ]
+        },
+        {
+            "message": "Method TwigStan\\Demo\\Model\\Post::excerpt() invoked with 2 parameters, 0-1 required.",
+            "identifier": "getAttribute.arguments.count",
+            "tip": null,
+            "twigSourceLocation": "templates/errors.html.twig:16",
+            "renderPoints": [
+                "src/Controller/ErrorsController.php:22"
+            ]
+        },
+        {
+            "message": "Offset 'foo' does not exist on 'twig'.",
+            "identifier": "getAttribute.offsetAccess.notFound",
+            "tip": null,
+            "twigSourceLocation": "templates/errors.html.twig:20",
+            "renderPoints": [
+                "src/Controller/ErrorsController.php:22"
+            ]
+        },
+        {
+            "message": "Empty array passed to foreach.",
+            "identifier": "foreach.emptyArray",
+            "tip": null,
+            "twigSourceLocation": "templates/errors.html.twig:23",
+            "renderPoints": [
+                "src/Controller/ErrorsController.php:22"
+            ]
+        },
+        {
+            "message": "Neither the property \"author\" nor one of the methods \"author()\", \"getauthor()\", \"isauthor()\", \"hasauthor()\" or \"__call()\" exist and have public access in class \"TwigStan\\Demo\\Model\\Post\".",
+            "identifier": "getAttribute.notFound",
+            "tip": null,
+            "twigSourceLocation": "templates/post/show.html.twig:7",
+            "renderPoints": [
+                "src/Controller/PostController.php:28"
+            ]
+        },
+        {
+            "message": "Neither the property \"summary\" nor one of the methods \"summary()\", \"getsummary()\", \"issummary()\", \"hassummary()\" or \"__call()\" exist and have public access in class \"TwigStan\\Demo\\Model\\Post\".",
+            "identifier": "getAttribute.notFound",
+            "tip": null,
+            "twigSourceLocation": "templates/post/show.html.twig:8",
+            "renderPoints": [
+                "src/Controller/PostController.php:28"
+            ]
+        }
+    ],
+    "fileSpecificErrors": []
+}

@@ -1,0 +1,24 @@
+{% extends 'post/layout.html.twig' %}
+{% import '_macros.html.twig' as ui %}
+
+{# Two levels of inheritance: archive -> post/layout -> base #}
+{% block title %}{{ parent() }} archive{% endblock %}
+
+{% block sidebar %}
+    {{ parent() }}: {{ posts|length }}
+{% endblock %}
+
+{% block content %}
+    {# Macros: the arguments at the call site are analyzed too #}
+    {{ ui.badge('Posts', posts|length) }}
+    {{ ui.badge('Drafts', drafts|length) }}
+
+    {# Narrowing: guarded by the if, so no error here #}
+    {% if latest %}
+        {{ ui.post_link(latest) }}
+        <p>{{ latest.title }}</p>
+    {% endif %}
+
+    {# The same access without the guard #}
+    <p>{{ latest.title }}</p>
+{% endblock %}

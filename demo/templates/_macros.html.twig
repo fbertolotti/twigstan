@@ -1,0 +1,7 @@
+{% macro badge(label, count) %}
+    <span class="badge">{{ label }}: {{ count }}</span>
+{% endmacro %}
+
+{% macro post_link(post) %}
+    <a href="/post/{{ post.id }}">{{ post.title }}</a>
+{% endmacro %}

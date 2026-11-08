@@ -176,6 +176,45 @@ function verify_commits(): int
     return 0;
 }
 
+#[AsTask(name: 'check-quick', aliases: ['quick', 'fast'])]
+function check_quick(
+    #[AsOption(mode: InputOption::VALUE_NEGATABLE)]
+    bool $fix = true,
+): int {
+    if ( ! fs()->exists('vendor')) {
+        composer_install();
+    }
+
+    $steps = [
+        'EditorConfig' => fn(): int => editorconfig(),
+        'PHP-CS-Fixer' => fn(): int => phpcsfixer($fix),
+        'Twig-CS-Fixer' => fn(): int => twigcsfixer($fix),
+        'PHPStan' => fn(): int => phpstan(),
+        'PHPUnit (unit suite)' => fn(): int => phpunit(['--testsuite', 'unit']),
+    ];
+
+    $failed = [];
+    foreach ($steps as $name => $step) {
+        io()->section(sprintf('Running %s', $name));
+
+        if ($step() !== 0) {
+            $failed[] = $name;
+        }
+    }
+
+    io()->writeln('');
+
+    if ($failed !== []) {
+        io()->error(sprintf('Failed: %s', implode(', ', $failed)));
+
+        return 1;
+    }
+
+    io()->success('No issues found');
+
+    return 0;
+}
+
 #[AsTask(name: 'qa', default: true)]
 function qa(): int
 {

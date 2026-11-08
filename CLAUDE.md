@@ -19,7 +19,8 @@ PHP_VERSION=8.4 docker compose up -d --build   # other PHP version (CI runs 8.3,
 
 Inside the container (or on a host with Castor):
 
-- `castor phpunit` (aliases `test`, `tests`): extra args go straight to PHPUnit, e.g. `castor phpunit --filter Bug152` or `vendor/bin/phpunit tests/EndToEnd/Bug152`. The full suite takes ~6 minutes because end-to-end tests spawn PHPStan subprocesses.
+- `castor phpunit` (aliases `test`, `tests`): extra args go straight to PHPUnit, e.g. `castor phpunit --filter Bug152` or `vendor/bin/phpunit tests/EndToEnd/Bug152`. The suites are `unit` (everything except `tests/EndToEnd`, takes seconds) and `e2e`: `castor phpunit --testsuite unit`. The full suite takes ~6 minutes because end-to-end tests spawn PHPStan subprocesses.
+- `castor check-quick` (aliases `quick`, `fast`): the fast checks only (EditorConfig, PHP-CS-Fixer, Twig-CS-Fixer, PHPStan, unit suite). It runs every step and lists the failures at the end; `--no-fix` makes the fixers only check. `castor qa` remains the complete check.
 - `castor phpstan` (alias `stan`): analyzes TwigStan itself with `phpstan-local.neon`; CI uses `--no-local`.
 - `castor php-cs-fixer --no-fix`, `castor twig-cs-fixer --no-fix`, `castor editorconfig`, `castor dependency-analyzer`, `castor composer-normalize`: the CI style checks. Without `--no-fix` the two fixers rewrite files.
 - `castor verify-commits`: fails on `fixup!`/`squash!` commits compared with `origin/main`.

@@ -23,8 +23,12 @@
          failOnSkipped="true"
          failOnIncomplete="true">
     <testsuites>
-        <testsuite name="TwigStan">
+        <testsuite name="unit">
             <directory>tests</directory>
+            <exclude>tests/EndToEnd</exclude>
+        </testsuite>
+        <testsuite name="e2e">
+            <directory>tests/EndToEnd</directory>
         </testsuite>
     </testsuites>
 

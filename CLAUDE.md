@@ -42,11 +42,13 @@ Original file names and line numbers must survive every transformation, since th
 
 ## Testing
 
-End-to-end tests live in `tests/EndToEnd/<Case>/`: each case folder holds templates, PHP render points, a `*Test.php` extending `AbstractEndToEndTestCase` (calling `runAnalysis(__DIR__)`), and expected-result JSON (`errors.json`, `context.json`) compared by `tests/ErrorHelper.php`. To add a case, copy an existing folder such as `Bug152`. Tests use `tests/twigstan.php` and `tests/twig-loader.php`. PHPUnit is strict (`failOnRisky`, `failOnWarning`, `failOnSkipped`, `failOnIncomplete`), so a test limited to selected files fails as incomplete by design.
+End-to-end tests live in `tests/EndToEnd/<Case>/`: each case folder holds templates, PHP render points, a `*Test.php` extending `AbstractEndToEndTestCase` (calling `runAnalysis(__DIR__)`), and expected-result JSON (`errors.json`, `context.json`) compared by `tests/ErrorHelper.php`. When the expected errors differ per Twig major version, add an `errors.v3.json`/`errors.v4.json` next to `errors.json`: its entries are appended to the base ones. To add a case, copy an existing folder such as `Bug152`. Tests use `tests/twigstan.php` and `tests/twig-loader.php`. PHPUnit is strict (`failOnRisky`, `failOnWarning`, `failOnSkipped`, `failOnIncomplete`), so a test limited to selected files fails as incomplete by design.
 
 ## Conventions
 
 - PSR-4: `TwigStan\` maps to `src/` and, for tests, `tests/`. `TwigStan\Demo\` maps to `demo/src/`.
 - Code style is `.php-cs-fixer.php` (PER-CS2.0 plus custom rules) and `.twig-cs-fixer.php`, with `.editorconfig` enforced; run the fixers before committing.
 - `phpstan.neon` analyzes `bin/twigstan`, `src` and `tests` at level max with no baseline. Use of Twig and PHPStan internals is intentional and ignored in `phpstan.neon`.
+- `example/` holds sample `twigstan.php` and Twig loader files as starting points for users.
+- `TODO.md` tracks open work, currently Twig 4 support (CI only runs Twig 3, so `castor composer:install-twig4` currently fails the e2e suite).
 - `demo/` and `tests/` are `export-ignore`d, so they are not shipped in the Composer archive.

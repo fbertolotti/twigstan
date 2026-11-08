@@ -1,5 +1,6 @@
 /.github export-ignore
 /bin/castor export-ignore
+/TODO.md export-ignore
 /demo export-ignore
 /tests export-ignore
 .* export-ignore
